@@ -7,24 +7,42 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RentalKendaraan_025.Models;
 
-namespace RentalKendaraan_025.Views
+namespace RentalKendaraan_025.Controllers
 {
-    public class GendersController : Controller
+    public class KondisiKendaraansController : Controller
     {
         private readonly RentKendaraanContext _context;
 
-        public GendersController(RentKendaraanContext context)
+        public KondisiKendaraansController(RentKendaraanContext context)
         {
             _context = context;
         }
 
-        // GET: Genders
-        public async Task<IActionResult> Index()
+        // GET: KondisiKendaraans
+        public async Task<IActionResult> Index(string ktsd, string searchString)
         {
-            return View(await _context.Genders.ToListAsync());
+            var ktsdList = new List<string>();
+            var ktsdQuery = from d in _context.KondisiKendaraans orderby d.NamaKondisi select d.NamaKondisi.ToString();
+
+            ktsdList.AddRange(ktsdQuery.Distinct());
+            ViewBag.ktsd = new SelectList(ktsdList);
+
+            var menu = from m in _context.KondisiKendaraans select m;
+
+            if (!string.IsNullOrEmpty(ktsd))
+            {
+                menu = menu.Where(x => x.NamaKondisi == ktsd);
+            }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                menu = menu.Where(s => s.NamaKondisi.Contains(searchString));
+            }
+
+            return View(await menu.ToListAsync());
         }
 
-        // GET: Genders/Details/5
+        // GET: KondisiKendaraans/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,39 +50,39 @@ namespace RentalKendaraan_025.Views
                 return NotFound();
             }
 
-            var gender = await _context.Genders
-                .FirstOrDefaultAsync(m => m.IdGender == id);
-            if (gender == null)
+            var kondisiKendaraan = await _context.KondisiKendaraans
+                .FirstOrDefaultAsync(m => m.IdKondisi == id);
+            if (kondisiKendaraan == null)
             {
                 return NotFound();
             }
 
-            return View(gender);
+            return View(kondisiKendaraan);
         }
 
-        // GET: Genders/Create
+        // GET: KondisiKendaraans/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Genders/Create
+        // POST: KondisiKendaraans/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdGender,NamaGender")] Gender gender)
+        public async Task<IActionResult> Create([Bind("IdKondisi,NamaKondisi")] KondisiKendaraan kondisiKendaraan)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(gender);
+                _context.Add(kondisiKendaraan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(gender);
+            return View(kondisiKendaraan);
         }
 
-        // GET: Genders/Edit/5
+        // GET: KondisiKendaraans/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +90,22 @@ namespace RentalKendaraan_025.Views
                 return NotFound();
             }
 
-            var gender = await _context.Genders.FindAsync(id);
-            if (gender == null)
+            var kondisiKendaraan = await _context.KondisiKendaraans.FindAsync(id);
+            if (kondisiKendaraan == null)
             {
                 return NotFound();
             }
-            return View(gender);
+            return View(kondisiKendaraan);
         }
 
-        // POST: Genders/Edit/5
+        // POST: KondisiKendaraans/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdGender,NamaGender")] Gender gender)
+        public async Task<IActionResult> Edit(int id, [Bind("IdKondisi,NamaKondisi")] KondisiKendaraan kondisiKendaraan)
         {
-            if (id != gender.IdGender)
+            if (id != kondisiKendaraan.IdKondisi)
             {
                 return NotFound();
             }
@@ -96,12 +114,12 @@ namespace RentalKendaraan_025.Views
             {
                 try
                 {
-                    _context.Update(gender);
+                    _context.Update(kondisiKendaraan);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GenderExists(gender.IdGender))
+                    if (!KondisiKendaraanExists(kondisiKendaraan.IdKondisi))
                     {
                         return NotFound();
                     }
@@ -112,10 +130,10 @@ namespace RentalKendaraan_025.Views
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(gender);
+            return View(kondisiKendaraan);
         }
 
-        // GET: Genders/Delete/5
+        // GET: KondisiKendaraans/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,30 +141,30 @@ namespace RentalKendaraan_025.Views
                 return NotFound();
             }
 
-            var gender = await _context.Genders
-                .FirstOrDefaultAsync(m => m.IdGender == id);
-            if (gender == null)
+            var kondisiKendaraan = await _context.KondisiKendaraans
+                .FirstOrDefaultAsync(m => m.IdKondisi == id);
+            if (kondisiKendaraan == null)
             {
                 return NotFound();
             }
 
-            return View(gender);
+            return View(kondisiKendaraan);
         }
 
-        // POST: Genders/Delete/5
+        // POST: KondisiKendaraans/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var gender = await _context.Genders.FindAsync(id);
-            _context.Genders.Remove(gender);
+            var kondisiKendaraan = await _context.KondisiKendaraans.FindAsync(id);
+            _context.KondisiKendaraans.Remove(kondisiKendaraan);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GenderExists(int id)
+        private bool KondisiKendaraanExists(int id)
         {
-            return _context.Genders.Any(e => e.IdGender == id);
+            return _context.KondisiKendaraans.Any(e => e.IdKondisi == id);
         }
     }
 }

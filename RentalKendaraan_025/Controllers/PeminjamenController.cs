@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RentalKendaraan_025.Models;
 
-namespace RentalKendaraan_025.Views
+namespace RentalKendaraan_025.Controllers
 {
     public class PeminjamenController : Controller
     {
@@ -19,10 +19,27 @@ namespace RentalKendaraan_025.Views
         }
 
         // GET: Peminjamen
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string ktsd, string searchString)
         {
-            var rentKendaraanContext = _context.Peminjamen.Include(p => p.IdCustomerNavigation).Include(p => p.IdJaminanNavigation).Include(p => p.IdKendaraanNavigation);
-            return View(await rentKendaraanContext.ToListAsync());
+            var ktsdList = new List<string>();
+            var ktsdQuery = from d in _context.Peminjamen orderby d.Biaya select d.Biaya.ToString();
+
+            ktsdList.AddRange(ktsdQuery.Distinct());
+            ViewBag.ktsd = new SelectList(ktsdList);
+
+            var menu = from m in _context.Peminjamen.Include(k => k.IdJaminanNavigation).Include(k => k.IdCustomerNavigation).Include(k => k.IdKendaraanNavigation) select m;
+
+            if (!string.IsNullOrEmpty(ktsd))
+            {
+                menu = menu.Where(x => x.Biaya.ToString() == ktsd);
+            }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                menu = menu.Where(s => s.TglPeminjaman.ToString().Contains(searchString) || s.Biaya.ToString().Contains(searchString) || s.IdCustomer.ToString().Contains(searchString) || s.IdJaminan.ToString().Contains(searchString) || s.IdKendaraan.ToString().Contains(searchString));
+            }
+
+            return View(await menu.ToListAsync());
         }
 
         // GET: Peminjamen/Details/5
@@ -49,9 +66,9 @@ namespace RentalKendaraan_025.Views
         // GET: Peminjamen/Create
         public IActionResult Create()
         {
-            ViewData["IdCustomer"] = new SelectList(_context.Customers, "IdCustomer", "IdCustomer");
-            ViewData["IdJaminan"] = new SelectList(_context.Jaminans, "IdJaminan", "IdJaminan");
-            ViewData["IdKendaraan"] = new SelectList(_context.Kendaraans, "IdKendaraan", "IdKendaraan");
+            ViewData["IdCustomer"] = new SelectList(_context.Customers, "IdCustomer", "Alamat");
+            ViewData["IdJaminan"] = new SelectList(_context.Jaminans, "IdJaminan", "NamaJaminan");
+            ViewData["IdKendaraan"] = new SelectList(_context.Kendaraans, "IdKendaraan", "Ketersediaan");
             return View();
         }
 
@@ -68,9 +85,9 @@ namespace RentalKendaraan_025.Views
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCustomer"] = new SelectList(_context.Customers, "IdCustomer", "IdCustomer", peminjaman.IdCustomer);
-            ViewData["IdJaminan"] = new SelectList(_context.Jaminans, "IdJaminan", "IdJaminan", peminjaman.IdJaminan);
-            ViewData["IdKendaraan"] = new SelectList(_context.Kendaraans, "IdKendaraan", "IdKendaraan", peminjaman.IdKendaraan);
+            ViewData["IdCustomer"] = new SelectList(_context.Customers, "IdCustomer", "Alamat", peminjaman.IdCustomer);
+            ViewData["IdJaminan"] = new SelectList(_context.Jaminans, "IdJaminan", "NamaJaminan", peminjaman.IdJaminan);
+            ViewData["IdKendaraan"] = new SelectList(_context.Kendaraans, "IdKendaraan", "Ketersediaan", peminjaman.IdKendaraan);
             return View(peminjaman);
         }
 
@@ -87,9 +104,9 @@ namespace RentalKendaraan_025.Views
             {
                 return NotFound();
             }
-            ViewData["IdCustomer"] = new SelectList(_context.Customers, "IdCustomer", "IdCustomer", peminjaman.IdCustomer);
-            ViewData["IdJaminan"] = new SelectList(_context.Jaminans, "IdJaminan", "IdJaminan", peminjaman.IdJaminan);
-            ViewData["IdKendaraan"] = new SelectList(_context.Kendaraans, "IdKendaraan", "IdKendaraan", peminjaman.IdKendaraan);
+            ViewData["IdCustomer"] = new SelectList(_context.Customers, "IdCustomer", "Alamat", peminjaman.IdCustomer);
+            ViewData["IdJaminan"] = new SelectList(_context.Jaminans, "IdJaminan", "NamaJaminan", peminjaman.IdJaminan);
+            ViewData["IdKendaraan"] = new SelectList(_context.Kendaraans, "IdKendaraan", "Ketersediaan", peminjaman.IdKendaraan);
             return View(peminjaman);
         }
 
@@ -125,9 +142,9 @@ namespace RentalKendaraan_025.Views
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCustomer"] = new SelectList(_context.Customers, "IdCustomer", "IdCustomer", peminjaman.IdCustomer);
-            ViewData["IdJaminan"] = new SelectList(_context.Jaminans, "IdJaminan", "IdJaminan", peminjaman.IdJaminan);
-            ViewData["IdKendaraan"] = new SelectList(_context.Kendaraans, "IdKendaraan", "IdKendaraan", peminjaman.IdKendaraan);
+            ViewData["IdCustomer"] = new SelectList(_context.Customers, "IdCustomer", "Alamat", peminjaman.IdCustomer);
+            ViewData["IdJaminan"] = new SelectList(_context.Jaminans, "IdJaminan", "NamaJaminan", peminjaman.IdJaminan);
+            ViewData["IdKendaraan"] = new SelectList(_context.Kendaraans, "IdKendaraan", "Ketersediaan", peminjaman.IdKendaraan);
             return View(peminjaman);
         }
 

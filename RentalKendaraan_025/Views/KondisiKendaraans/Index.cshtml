@@ -9,11 +9,19 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+@using (Html.BeginForm("Index", "KondisiKendaraans", FormMethod.Get))
+{
+    <p>
+        Ketersediaans: @Html.DropDownList("ktsd", "Pilih Kondisi Kendaraan")
+        Cari Data: @Html.TextBox("searchString")
+        <input type="submit" value="Filter" />
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayName("NamaKondisi")
+                @Html.DisplayNameFor(model => model.NamaKondisi)
             </th>
             <th></th>
         </tr>
@@ -26,9 +34,9 @@
                     @Html.DisplayFor(modelItem => item.NamaKondisi)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdKondisi"><i class="fa fa-marker fa-lg"></i></a> |
-                    <a asp-action="Details" asp-route-id="@item.IdKondisi"><i class="fas fa-list"></i></a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdKondisi"><i class="fa fa-trash-alt fa-lg"></i></a>
+                    <a asp-action="Edit" asp-route-id="@item.IdKondisi">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdKondisi">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdKondisi">Delete</a>
                 </td>
             </tr>
         }

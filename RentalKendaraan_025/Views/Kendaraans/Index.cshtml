@@ -9,23 +9,31 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+@using (Html.BeginForm("Index", "Kendaraans", FormMethod.Get))
+{
+    <p>
+        Ketersediaans: @Html.DropDownList("ktsd", "Pilih Ketersediaan")
+        Cari Data: @Html.TextBox("searchString")
+        <input type="submit" value="Filter" />
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayName("NamaKendaraan")
+                @Html.DisplayNameFor(model => model.NamaKendaraan)
             </th>
             <th>
-                @Html.DisplayName("No.Polisi")
+                @Html.DisplayNameFor(model => model.NoPolisi)
             </th>
             <th>
-                @Html.DisplayName("No.STNK")
+                @Html.DisplayNameFor(model => model.NoStnk)
             </th>
             <th>
-                @Html.DisplayName("Ketersediaan")
+                @Html.DisplayNameFor(model => model.Ketersediaan)
             </th>
             <th>
-                @Html.DisplayName("IdJenisKendaraan")
+                @Html.DisplayNameFor(model => model.IdJenisKendaraanNavigation)
             </th>
             <th></th>
         </tr>
@@ -47,15 +55,14 @@
                     @Html.DisplayFor(modelItem => item.Ketersediaan)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdJenisKendaraanNavigation.IdJenisKendaraan)
+                    @Html.DisplayFor(modelItem => item.IdJenisKendaraanNavigation.NamaJenisKendaraan)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdKendaraan"><i class="fa fa-marker fa-lg"></i></a> |
-                    <a asp-action="Details" asp-route-id="@item.IdKendaraan"><i class="fas fa-list"></i></a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdKendaraan"><i class="fa fa-trash-alt fa-lg"></i></a>
+                    <a asp-action="Edit" asp-route-id="@item.IdKendaraan">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdKendaraan">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdKendaraan">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
