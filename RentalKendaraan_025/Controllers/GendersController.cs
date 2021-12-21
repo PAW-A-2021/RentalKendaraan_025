@@ -9,7 +9,17 @@ using RentalKendaraan_025.Models;
 
 namespace RentalKendaraan_025.Controllers
 {
-    public async Task<IActionResult> Index(string ktsd, string searchString, string sortOrder, string currentFilter, int? pageNumber)
+    public class GendersController : Controller
+    {
+        private readonly RentKendaraanContext _context;
+
+        public GendersController(RentKendaraanContext context)
+        {
+            _context = context;
+        }
+
+        // GET: Genders
+        public async Task<IActionResult> Index(string ktsd, string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
             var ktsdList = new List<string>();
             var ktsdQuery = from d in _context.Genders orderby d.NamaGender select d.NamaGender.ToString();

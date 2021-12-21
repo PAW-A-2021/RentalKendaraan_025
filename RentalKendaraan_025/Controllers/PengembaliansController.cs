@@ -19,7 +19,7 @@ namespace RentalKendaraan_025.Controllers
         }
 
         // GET: Pengembalians
-       public async Task<IActionResult> Index(string ktsd, string searchString, string sortOrder, string currentFilter, int? pageNumber)
+        public async Task<IActionResult> Index(string ktsd, string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
             var ktsdList = new List<string>();
             var ktsdQuery = from d in _context.Pengembalians orderby d.Denda select d.Denda.ToString();

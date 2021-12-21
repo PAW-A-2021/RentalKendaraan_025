@@ -19,7 +19,7 @@ namespace RentalKendaraan_025.Controllers
         }
 
         // GET: Jaminans
-         public async Task<IActionResult> Index(string ktsd, string searchString, string sortOrder, string currentFilter, int? pageNumber)
+        public async Task<IActionResult> Index(string ktsd, string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
             var ktsdList = new List<string>();
             var ktsdQuery = from d in _context.Jaminans orderby d.NamaJaminan select d.NamaJaminan.ToString();
